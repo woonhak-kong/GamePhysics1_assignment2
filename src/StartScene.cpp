@@ -46,28 +46,28 @@ void StartScene::handleEvents()
 void StartScene::start()
 {
 	const SDL_Color blue = { 0, 0, 255, 255 };
-	m_pStartLabel = new Label("Woonhak Kong", "Consolas", 60, blue, glm::vec2(400.0f, 40.0f));
+	m_pStartLabel = new Label("GamePhysics Assigment2", "Consolas", 60, blue, glm::vec2(300.0f, 40.0f));
 	m_pStartLabel->setParent(this);
 	addChild(m_pStartLabel);
-	m_pStartLabel = new Label("101300258", "Consolas", 60, blue, glm::vec2(400.0f, 100.0f));
+	m_pStartLabel = new Label("Woonhak Kong", "Consolas", 60, blue, glm::vec2(300.0f, 100.0f));
+	m_pStartLabel->setParent(this);
+	addChild(m_pStartLabel);
+	m_pStartLabel = new Label("101300258", "Consolas", 60, blue, glm::vec2(300.0f, 160.0f));
 	m_pStartLabel->setParent(this);
 	addChild(m_pStartLabel);
 
 
-	m_pShip = new Ship();
-	m_pShip->getTransform()->position = glm::vec2(400.0f, 300.0f); 
-	addChild(m_pShip); 
 
 	// Start Button
 	m_pStartButton = new Button();
-	m_pStartButton->getTransform()->position = glm::vec2(400.0f, 400.0f); 
+	m_pStartButton->getTransform()->position = glm::vec2(400.0f, 400.0f);
 
 	m_pStartButton->addEventListener(CLICK, [&]()-> void
 	{
 		m_pStartButton->setActive(false);
 		TheGame::Instance().changeSceneState(PLAY_SCENE);
 	});
-	
+
 	m_pStartButton->addEventListener(MOUSE_OVER, [&]()->void
 	{
 		m_pStartButton->setAlpha(128);
