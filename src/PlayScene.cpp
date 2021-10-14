@@ -45,11 +45,11 @@ PlayScene::~PlayScene()
 
 void PlayScene::draw()
 {
-	/*TextureManager::Instance().drawBySize("bg", 0, 0, 1280, 720);
-	TextureManager::Instance().drawBySize("bg2", 0, 600, 1280, 120);*/
+	TextureManager::Instance().drawBySize("bg", 0, 0, 1280, 720);
+	TextureManager::Instance().drawBySize("bg2", 0, 600, 1280, 120);
 
 
-	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 0, 255, 255);
+	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 0, 255, 0, 255);
 	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), 0, m_groundHeight, 1280, m_groundHeight);
 	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), 0 + m_offsetRampPosition, m_groundHeight, 0 + m_offsetRampPosition, m_groundHeight - m_rampHeight);
 	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), 0 + m_offsetRampPosition + m_rampWidth, m_groundHeight, 0 + m_offsetRampPosition, m_groundHeight - m_rampHeight);
@@ -59,12 +59,6 @@ void PlayScene::draw()
 
 
 	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 255, 0, 255);
-	float beforeX = m_startingX;
-	float beforeY = m_startingY;
-	float x = 0;
-	float y = 0;
-
-
 
 
 	drawDisplayList();
@@ -246,8 +240,8 @@ void PlayScene::start()
 	// Set GUI Title
 	m_guiTitle = "Play Scene";
 
-	/*TextureManager::Instance().load("../Assets/textures/bg1.png", "bg");
-	TextureManager::Instance().load("../Assets/textures/bg2.png", "bg2");*/
+	TextureManager::Instance().load("../Assets/textures/bg1.png", "bg");
+	TextureManager::Instance().load("../Assets/textures/bg2.png", "bg2");
 
 	const SDL_Color blue = { 0, 255, 255, 255 };
 	float yCoor = 10.f;
