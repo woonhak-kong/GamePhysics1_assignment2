@@ -15,6 +15,7 @@ PlayScene::PlayScene() :
 	m_startingX(50.f),
 	m_startingY(600.f),
 	m_startingXAfterHit(0.0f),
+	m_startingYAfterHit(0.0f),
 	m_launchElevationAngle(45.f),
 	m_launchSpeed(0.0f),
 	m_accelerationGravity({ 0.f, 9.8f }),
@@ -122,72 +123,50 @@ void PlayScene::update()
 		else
 		{
 			m_playTimeAfterHittingGround += t;
+			float xAcceleration = (m_kFrictionCoefficientFloor * abs(m_accelerationGravity.y * m_massKg)) * (-1 * (m_instantaneousVelocity.x / abs(m_instantaneousVelocity.x)))
+				/ m_massKg;
+			m_forceFriction.x = xAcceleration;
+
 			newPositionX = m_startingXAfterHit + m_startingVelocity.x * m_playTimeAfterHittingGround
 				+ (0.5f * m_forceFriction.x * (m_playTimeAfterHittingGround * m_playTimeAfterHittingGround));
+			/*newPositionY = m_startingYAfterHit + m_startingVelocity.y * m_playTimeAfterHittingGround
+				+ (0.5f * m_forceFriction.y * (m_playTimeAfterHittingGround * m_playTimeAfterHittingGround));*/
+			newPositionY = m_groundHeight - m_pBall->getHeight() / 2;
 		}
 
 
 		// if hit the ground
 		if (!m_isOnTheGround)
 		{
-			if (newPositionY >= m_groundHeight)
+			if (newPositionY >= m_groundHeight - m_pBall->getHeight() / 2)
 			{
 				std::cout << "hit the ground" << std::endl;
 				m_startingXAfterHit = newPositionX;
-				//m_startingVelocity.x = m_instantaneousVelocity.x;
-				//m_isOnTheGround = true;
+				m_startingYAfterHit = newPositionY;
+				m_startingVelocity.x = m_instantaneousVelocity.x;
+				m_pBall->setCurrentHeading(0.0f);
+				m_isOnTheGround = true;
 			}
-		}
-
-
-		if (!m_isOnTheGround)
-		{
-			m_pBall->getTransform()->position.y = newPositionY;
 		}
 		else
 		{
-			m_pBall->getTransform()->position.y = m_startingY;
+			// finding velocity is 0
+			float Vi = m_startingVelocity.x;
+			float Vf = 0;
+			float accel = m_forceFriction.x;
+			float timeOfZero = (Vf - Vi) / accel;
 
-			// for finding friction acceleration
-			//glm::vec2 frictionAcceleration;
-			// friction acceleration = N * coefficient / mass
-			float xAcceleration = (m_kFrictionCoefficientFloor * abs(m_accelerationGravity.y * m_massKg)) * (-1 * (m_instantaneousVelocity.x / abs(m_instantaneousVelocity.x)))
-			/ m_massKg;
-			m_forceFriction.x = xAcceleration;
-			//std::cout << xAcceleration << std::endl;
+			if (m_playTimeAfterHittingGround > timeOfZero)
+			{
+				m_isStart = false;
+			}
 		}
-
+		
 		m_pBall->getTransform()->position.x = newPositionX;
+		m_pBall->getTransform()->position.y = newPositionY;
 
 
 
-		////////////////////// calculation of maxValue for finding time.
-		// maximum value of positionX
-		//float a = 0.5f * m_forceFriction.x;
-		//float b = m_startingVelocity.x;
-		//float c = m_startingXAfterHit;
-
-		//float maxValue = c - ((b * b) / (4 * a)) - 0.3 /* -0.3 is for that sometimes maxValue can be over graph because of decimal calculation */;
-
-		////std::cout << maxValue << std::endl;
-
-		//// finding time when X is max;
-		//c -= maxValue;
-
-		//float timeOfmax[2] {0,};
-
-		//quadraticFormula(a, b, c, timeOfmax);
-		////std::cout << timeOfmax[0] << std::endl;
-		////std::cout << timeOfmax[1] << std::endl;
-
-		//// choosing positive value;
-		//double finalMaxTime = timeOfmax[0] < timeOfmax[1] ? timeOfmax[0] : timeOfmax[1];
-
-		//if (m_playTimeAfterHittingGround > finalMaxTime)
-		//{
-		//	m_isStart = false;
-		//}
-		//////////////////////////////
 	}
 	std::stringstream string;
 	string << std::fixed << std::setprecision(2) << "Posision : (" << m_pBall->getTransform()->position.x << ", "
@@ -464,6 +443,7 @@ void PlayScene::reset()
 	m_playTimeAfterHittingGround = 0;
 	m_startingXAfterHit = 0.0f;
 	m_forceFriction = { 0, 0 };
+	m_startingVelocity = { 0.0f, 0.0f };
 	setInitBall();
 	setRampAcceleration();
 }

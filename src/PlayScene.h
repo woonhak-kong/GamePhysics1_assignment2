@@ -35,6 +35,7 @@ private:
 	float m_startingY;
 
 	float m_startingXAfterHit;
+	float m_startingYAfterHit;
 	float m_launchElevationAngle;
 	float m_launchSpeed;
 	float m_playTime;
