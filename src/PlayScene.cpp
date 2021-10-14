@@ -16,7 +16,7 @@ PlayScene::PlayScene() :
 	m_startingY(600.f),
 	m_startingXAfterHit(0.0f),
 	m_launchElevationAngle(45.f),
-	m_launchSpeed(100.f),
+	m_launchSpeed(0.0f),
 	m_accelerationGravity({ 0.f, 9.8f }),
 	m_orientation({ 0.5,0.5 }),
 	m_isStart(false),
@@ -53,8 +53,8 @@ void PlayScene::draw()
 
 	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 0, 255, 255);
 	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), 0, m_groundHeight, 1280, m_groundHeight);
-	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), 0+ m_offsetRampPosition, m_groundHeight, 0 + m_offsetRampPosition, m_groundHeight - m_rampHeight);
-	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), 0 + m_rampWidth, m_groundHeight, 0 + m_offsetRampPosition, m_groundHeight - m_rampHeight);
+	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), 0 + m_offsetRampPosition, m_groundHeight, 0 + m_offsetRampPosition, m_groundHeight - m_rampHeight);
+	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), 0 + m_offsetRampPosition + m_rampWidth, m_groundHeight, 0 + m_offsetRampPosition, m_groundHeight - m_rampHeight);
 
 
 
@@ -115,9 +115,9 @@ void PlayScene::update()
 		if (!m_isOnTheGround)
 		{
 			newPositionX = m_startingX + m_startingVelocity.x * m_playTime
-				+ (0.5f * m_accelerationGravity.x * (m_playTime * m_playTime));
+				+ (0.5f * m_rampAcceleration.x * (m_playTime * m_playTime));
 			newPositionY = m_startingY + m_startingVelocity.y * m_playTime
-				+ (0.5f * m_accelerationGravity.y * (m_playTime * m_playTime));
+				+ (0.5f * m_rampAcceleration.y * (m_playTime * m_playTime));
 		}
 		else
 		{
@@ -130,12 +130,12 @@ void PlayScene::update()
 		// if hit the ground
 		if (!m_isOnTheGround)
 		{
-			if (newPositionY >= m_startingY)
+			if (newPositionY >= m_groundHeight)
 			{
 				std::cout << "hit the ground" << std::endl;
 				m_startingXAfterHit = newPositionX;
-				m_startingVelocity.x = m_instantaneousVelocity.x;
-				m_isOnTheGround = true;
+				//m_startingVelocity.x = m_instantaneousVelocity.x;
+				//m_isOnTheGround = true;
 			}
 		}
 
@@ -159,32 +159,34 @@ void PlayScene::update()
 
 		m_pBall->getTransform()->position.x = newPositionX;
 
+
+
 		////////////////////// calculation of maxValue for finding time.
 		// maximum value of positionX
-		float a = 0.5f * m_forceFriction.x;
-		float b = m_startingVelocity.x;
-		float c = m_startingXAfterHit;
+		//float a = 0.5f * m_forceFriction.x;
+		//float b = m_startingVelocity.x;
+		//float c = m_startingXAfterHit;
 
-		float maxValue = c - ((b * b) / (4 * a)) - 0.3 /* -0.3 is for that sometimes maxValue can be over graph because of decimal calculation */;
+		//float maxValue = c - ((b * b) / (4 * a)) - 0.3 /* -0.3 is for that sometimes maxValue can be over graph because of decimal calculation */;
 
-		//std::cout << maxValue << std::endl;
+		////std::cout << maxValue << std::endl;
 
-		// finding time when X is max;
-		c -= maxValue;
+		//// finding time when X is max;
+		//c -= maxValue;
 
-		float timeOfmax[2] {0,};
+		//float timeOfmax[2] {0,};
 
-		quadraticFormula(a, b, c, timeOfmax);
-		//std::cout << timeOfmax[0] << std::endl;
-		//std::cout << timeOfmax[1] << std::endl;
+		//quadraticFormula(a, b, c, timeOfmax);
+		////std::cout << timeOfmax[0] << std::endl;
+		////std::cout << timeOfmax[1] << std::endl;
 
-		// choosing positive value;
-		double finalMaxTime = timeOfmax[0] < timeOfmax[1] ? timeOfmax[0] : timeOfmax[1];
+		//// choosing positive value;
+		//double finalMaxTime = timeOfmax[0] < timeOfmax[1] ? timeOfmax[0] : timeOfmax[1];
 
-		if (m_playTimeAfterHittingGround > finalMaxTime)
-		{
-			m_isStart = false;
-		}
+		//if (m_playTimeAfterHittingGround > finalMaxTime)
+		//{
+		//	m_isStart = false;
+		//}
 		//////////////////////////////
 	}
 	std::stringstream string;
@@ -196,9 +198,9 @@ void PlayScene::update()
 	string << std::fixed << std::setprecision(2) << "Luanch Speed : " << m_launchSpeed;
 	m_speedLabel->setText(string.str());
 
-	// calculating velocity
-	m_instantaneousVelocity.x = m_isStart ? (m_isOnTheGround ? m_startingVelocity.x + m_forceFriction.x * m_playTimeAfterHittingGround : m_startingVelocity.x) : 0;
-	m_instantaneousVelocity.y = m_isStart ? (m_isOnTheGround ? 0 : m_startingVelocity.y + m_accelerationGravity.y * m_playTime) : 0;
+	// calculating velocity Vf = Vi + aT
+	m_instantaneousVelocity.x = m_isStart ? (m_isOnTheGround ? m_startingVelocity.x + m_forceFriction.x * m_playTimeAfterHittingGround : m_startingVelocity.x + m_rampAcceleration.x * m_playTime) : 0;
+	m_instantaneousVelocity.y = m_isStart ? (m_isOnTheGround ? 0 : m_startingVelocity.y + m_rampAcceleration.y * m_playTime) : 0;
 	string.str("");
 	string << std::fixed << std::setprecision(2) << "Velocity : (" << m_instantaneousVelocity.x << ", " << m_instantaneousVelocity.y << ")";
 	m_velocityLabel->setText(string.str());
@@ -334,8 +336,6 @@ void PlayScene::start()
 	m_pBall->getTransform()->position.y = m_startingY;
 	m_orientation.x = glm::cos(m_launchElevationAngle * Util::Deg2Rad);
 	m_orientation.y = -glm::sin(m_launchElevationAngle * Util::Deg2Rad);
-	m_startingVelocity.x = m_orientation.x * m_launchSpeed;
-	m_startingVelocity.y = m_orientation.y * m_launchSpeed;
 
 
 
@@ -388,7 +388,7 @@ void PlayScene::GUI_Function()
 		m_degreeOfRamp = atan((float)m_rampHeight / m_rampWidth) * Util::Rad2Deg;
 		m_rampDegreeLabel->getTransform()->position = glm::vec2(m_offsetRampPosition + m_rampWidth - 100, m_groundHeight + 20);
 		std::stringstream string;
-		string << std::fixed << std::setprecision(2) << "Degree : " << m_degreeOfRamp;
+		string << std::fixed << std::setprecision(10) << "Degree : " << m_degreeOfRamp;
 		m_rampDegreeLabel->setText(string.str());
 		setInitBall();
 		setRampAcceleration();
@@ -398,7 +398,7 @@ void PlayScene::GUI_Function()
 		m_degreeOfRamp = atan((float)m_rampHeight / m_rampWidth) * Util::Rad2Deg;
 		m_rampDegreeLabel->getTransform()->position = glm::vec2(m_offsetRampPosition + m_rampWidth - 100, m_groundHeight + 20);
 		std::stringstream string;
-		string << std::fixed << std::setprecision(2) << "Degree : " << m_degreeOfRamp;
+		string << std::fixed << std::setprecision(10) << "Degree : " << m_degreeOfRamp;
 		m_rampDegreeLabel->setText(string.str());
 		setInitBall();
 		setRampAcceleration();
@@ -495,5 +495,5 @@ void PlayScene::setRampAcceleration()
 
 	m_rampAcceleration.x = glm::cos(m_degreeOfRamp * Util::Deg2Rad) * accel;
 	m_rampAcceleration.y = glm::sin(m_degreeOfRamp * Util::Deg2Rad) * accel;
-	std::cout << "(" << m_rampAcceleration.x<< ", " << m_rampAcceleration.y << ")" << std::endl;
+	//std::cout << "(" << m_rampAcceleration.x<< ", " << m_rampAcceleration.y << ")" << std::endl;
 }
