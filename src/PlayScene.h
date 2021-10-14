@@ -36,8 +36,6 @@ private:
 
 	float m_startingXAfterHit;
 	float m_startingYAfterHit;
-	float m_launchElevationAngle;
-	float m_launchSpeed;
 	float m_playTime;
 	float m_playTimeAfterHittingGround;
 	float m_massKg;
@@ -49,7 +47,6 @@ private:
 	int m_offsetRampPosition;
 	glm::vec2 m_accelerationGravity;
 	glm::vec2 m_rampAcceleration;
-	glm::vec2 m_orientation;
 	glm::vec2 m_startingVelocity;
 	glm::vec2 m_instantaneousVelocity;
 	glm::vec2 m_forceFriction;
@@ -58,11 +55,9 @@ private:
 	bool m_isOnTheGround;
 
 	Label* m_positionLabel;
-	Label* m_speedLabel;
 	Label* m_velocityLabel;
 	Label* m_accelerationLabel;
 	Label* m_timeLabel;
-	Label* m_angleLabel;
 	Label* m_massLabel;
 	Label* m_coefficientOfFrictionFloor;
 	Label* m_forceFrictionAcceleration;

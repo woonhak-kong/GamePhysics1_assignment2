@@ -16,15 +16,12 @@ PlayScene::PlayScene() :
 	m_startingY(600.f),
 	m_startingXAfterHit(0.0f),
 	m_startingYAfterHit(0.0f),
-	m_launchElevationAngle(45.f),
-	m_launchSpeed(0.0f),
 	m_accelerationGravity({ 0.f, 9.8f }),
-	m_orientation({ 0.5,0.5 }),
 	m_isStart(false),
 	m_playTime(0),
 	m_playTimeAfterHittingGround(0),
 	m_massKg(10),
-	m_kFrictionCoefficientFloor(0.1f),
+	m_kFrictionCoefficientFloor(0.5f),
 	m_isOnTheGround(false),
 	m_instantaneousVelocity({ 0, 0 }),
 	m_forceFriction({ 0.0f, 0.0f }),
@@ -161,7 +158,7 @@ void PlayScene::update()
 				m_isStart = false;
 			}
 		}
-		
+
 		m_pBall->getTransform()->position.x = newPositionX;
 		m_pBall->getTransform()->position.y = newPositionY;
 
@@ -172,10 +169,6 @@ void PlayScene::update()
 	string << std::fixed << std::setprecision(2) << "Posision : (" << m_pBall->getTransform()->position.x << ", "
 		<< m_pBall->getTransform()->position.y << ")";
 	m_positionLabel->setText(string.str());
-
-	string.str("");
-	string << std::fixed << std::setprecision(2) << "Luanch Speed : " << m_launchSpeed;
-	m_speedLabel->setText(string.str());
 
 	// calculating velocity Vf = Vi + aT
 	m_instantaneousVelocity.x = m_isStart ? (m_isOnTheGround ? m_startingVelocity.x + m_forceFriction.x * m_playTimeAfterHittingGround : m_startingVelocity.x + m_rampAcceleration.x * m_playTime) : 0;
@@ -192,10 +185,6 @@ void PlayScene::update()
 	string.str("");
 	string << std::fixed << std::setprecision(2) << "Time : " << m_playTime;
 	m_timeLabel->setText(string.str());
-
-	string.str("");
-	string << std::fixed << std::setprecision(2) << "Angle : " << m_launchElevationAngle;
-	m_angleLabel->setText(string.str());
 
 	string.str("");
 	string << std::fixed << std::setprecision(2) << "Mass : " << m_massKg << " Kg";
@@ -266,9 +255,7 @@ void PlayScene::start()
 	m_positionLabel = new Label("", "Consolas", 20, blue, glm::vec2(xCoor, yCoor += 20));
 	m_positionLabel->setParent(this);
 	addChild(m_positionLabel);
-	m_speedLabel = new Label("", "Consolas", 20, blue, glm::vec2(xCoor, yCoor += 20));
-	m_speedLabel->setParent(this);
-	addChild(m_speedLabel);
+
 	m_velocityLabel = new Label("", "Consolas", 20, blue, glm::vec2(xCoor, yCoor += 20));
 	m_velocityLabel->setParent(this);
 	addChild(m_velocityLabel);
@@ -278,9 +265,7 @@ void PlayScene::start()
 	m_timeLabel = new Label("", "Consolas", 20, blue, glm::vec2(xCoor, yCoor += 20));
 	m_timeLabel->setParent(this);
 	addChild(m_timeLabel);
-	m_angleLabel = new Label("", "Consolas", 20, blue, glm::vec2(xCoor, yCoor += 20));
-	m_angleLabel->setParent(this);
-	addChild(m_angleLabel);
+
 	m_massLabel = new Label("", "Consolas", 20, blue, glm::vec2(xCoor, yCoor += 20));
 	m_massLabel->setParent(this);
 	addChild(m_massLabel);
@@ -313,8 +298,6 @@ void PlayScene::start()
 
 	m_pBall->getTransform()->position.x = m_startingX;
 	m_pBall->getTransform()->position.y = m_startingY;
-	m_orientation.x = glm::cos(m_launchElevationAngle * Util::Deg2Rad);
-	m_orientation.y = -glm::sin(m_launchElevationAngle * Util::Deg2Rad);
 
 
 
@@ -367,7 +350,7 @@ void PlayScene::GUI_Function()
 		m_degreeOfRamp = atan((float)m_rampHeight / m_rampWidth) * Util::Rad2Deg;
 		m_rampDegreeLabel->getTransform()->position = glm::vec2(m_offsetRampPosition + m_rampWidth - 100, m_groundHeight + 20);
 		std::stringstream string;
-		string << std::fixed << std::setprecision(10) << "Degree : " << m_degreeOfRamp;
+		string << std::fixed << std::setprecision(2) << "Degree : " << m_degreeOfRamp;
 		m_rampDegreeLabel->setText(string.str());
 		setInitBall();
 		setRampAcceleration();
@@ -377,7 +360,7 @@ void PlayScene::GUI_Function()
 		m_degreeOfRamp = atan((float)m_rampHeight / m_rampWidth) * Util::Rad2Deg;
 		m_rampDegreeLabel->getTransform()->position = glm::vec2(m_offsetRampPosition + m_rampWidth - 100, m_groundHeight + 20);
 		std::stringstream string;
-		string << std::fixed << std::setprecision(10) << "Degree : " << m_degreeOfRamp;
+		string << std::fixed << std::setprecision(2) << "Degree : " << m_degreeOfRamp;
 		m_rampDegreeLabel->setText(string.str());
 		setInitBall();
 		setRampAcceleration();
