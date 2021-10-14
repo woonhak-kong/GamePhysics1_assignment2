@@ -304,6 +304,9 @@ void PlayScene::start()
 	m_coefficientOfFrictionFloor= new Label("", "Consolas", 20, blue, glm::vec2(xCoor, yCoor += 20));
 	m_coefficientOfFrictionFloor->setParent(this);
 	addChild(m_coefficientOfFrictionFloor);
+	m_rampDegreeLabel= new Label("", "Consolas", 20, blue, glm::vec2(xCoor, yCoor += 20));
+	m_rampDegreeLabel->setParent(this);
+	addChild(m_rampDegreeLabel);
 
 
 
@@ -326,6 +329,10 @@ void PlayScene::start()
 
 
 	m_degreeOfRamp = atan((float)m_rampHeight / m_rampWidth) * Util::Rad2Deg;
+	m_rampDegreeLabel->getTransform()->position = glm::vec2(m_offsetRampPosition + m_rampWidth - 100, m_groundHeight + 20);
+	std::stringstream string;
+	string << std::fixed << std::setprecision(2) << "Degree : " << m_degreeOfRamp;
+	m_rampDegreeLabel->setText(string.str());
 
 
 	ImGuiWindowFrame::Instance().setGUIFunction(std::bind(&PlayScene::GUI_Function, this));
@@ -367,12 +374,18 @@ void PlayScene::GUI_Function()
 	if (ImGui::SliderInt("Ramp Height", &m_rampHeight, 200, 500))
 	{
 		m_degreeOfRamp = atan((float)m_rampHeight / m_rampWidth) * Util::Rad2Deg;
-		std::cout << m_degreeOfRamp << std::endl;
+		m_rampDegreeLabel->getTransform()->position = glm::vec2(m_offsetRampPosition + m_rampWidth - 100, m_groundHeight + 20);
+		std::stringstream string;
+		string << std::fixed << std::setprecision(2) << "Degree : " << m_degreeOfRamp;
+		m_rampDegreeLabel->setText(string.str());
 	}
 	if (ImGui::SliderInt("Ramp Width", &m_rampWidth, 400, 800))
 	{
 		m_degreeOfRamp = atan((float)m_rampHeight / m_rampWidth) * Util::Rad2Deg;
-		std::cout << m_degreeOfRamp << std::endl;
+		m_rampDegreeLabel->getTransform()->position = glm::vec2(m_offsetRampPosition + m_rampWidth - 100, m_groundHeight + 20);
+		std::stringstream string;
+		string << std::fixed << std::setprecision(2) << "Degree : " << m_degreeOfRamp;
+		m_rampDegreeLabel->setText(string.str());
 	}
 
 

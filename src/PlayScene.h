@@ -63,6 +63,7 @@ private:
 	Label* m_massLabel;
 	Label* m_coefficientOfFrictionFloor;
 	Label* m_forceFrictionAcceleration;
+	Label* m_rampDegreeLabel;
 
 
 
