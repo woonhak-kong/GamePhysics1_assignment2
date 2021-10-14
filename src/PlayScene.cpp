@@ -31,7 +31,8 @@ PlayScene::PlayScene() :
 	m_rampWidth(400),
 	m_groundHeight(600),
 	m_offsetRampPosition(30),
-	m_degreeOfRamp(0)
+	m_degreeOfRamp(0),
+	m_rampAcceleration({ 0.0f, 0.0f })
 
 {
 	PlayScene::start();
@@ -204,7 +205,7 @@ void PlayScene::update()
 
 
 	string.str("");
-	string << std::fixed << std::setprecision(2) << "G Acceleration : " << "(" << m_accelerationGravity.x << ", " << m_accelerationGravity.y << ")";
+	string << std::fixed << std::setprecision(2) << "Gravity : " << "(" << m_accelerationGravity.x << ", " << m_accelerationGravity.y << ")";
 	m_accelerationLabel->setText(string.str());
 
 	string.str("");
@@ -226,6 +227,10 @@ void PlayScene::update()
 	string.str("");
 	string << std::fixed << std::setprecision(2) << "Coefficient : " << m_kFrictionCoefficientFloor;
 	m_coefficientOfFrictionFloor->setText(string.str());
+
+	string.str("");
+	string << std::fixed << std::setprecision(2) << "Ramp Acceleration : " << "(" << m_rampAcceleration.x << ", " << m_rampAcceleration.y << ")";
+	m_rampAccelerationLabel->setText(string.str());
 
 
 
@@ -304,6 +309,12 @@ void PlayScene::start()
 	m_coefficientOfFrictionFloor= new Label("", "Consolas", 20, blue, glm::vec2(xCoor, yCoor += 20));
 	m_coefficientOfFrictionFloor->setParent(this);
 	addChild(m_coefficientOfFrictionFloor);
+	m_rampAccelerationLabel = new Label("", "Consolas", 20, blue, glm::vec2(xCoor, yCoor += 20));
+	m_rampAccelerationLabel->setParent(this);
+	addChild(m_rampAccelerationLabel);
+
+
+
 	m_rampDegreeLabel= new Label("", "Consolas", 20, blue, glm::vec2(xCoor, yCoor += 20));
 	m_rampDegreeLabel->setParent(this);
 	addChild(m_rampDegreeLabel);
@@ -334,7 +345,7 @@ void PlayScene::start()
 	string << std::fixed << std::setprecision(2) << "Degree : " << m_degreeOfRamp;
 	m_rampDegreeLabel->setText(string.str());
 	setInitBall();
-
+	setRampAcceleration();
 
 	ImGuiWindowFrame::Instance().setGUIFunction(std::bind(&PlayScene::GUI_Function, this));
 }
@@ -380,6 +391,7 @@ void PlayScene::GUI_Function()
 		string << std::fixed << std::setprecision(2) << "Degree : " << m_degreeOfRamp;
 		m_rampDegreeLabel->setText(string.str());
 		setInitBall();
+		setRampAcceleration();
 	}
 	if (ImGui::SliderInt("Ramp Width", &m_rampWidth, 400, 800))
 	{
@@ -389,6 +401,7 @@ void PlayScene::GUI_Function()
 		string << std::fixed << std::setprecision(2) << "Degree : " << m_degreeOfRamp;
 		m_rampDegreeLabel->setText(string.str());
 		setInitBall();
+		setRampAcceleration();
 	}
 
 
@@ -411,6 +424,7 @@ void PlayScene::GUI_Function()
 	{
 		//m_accelerationGravity.y = accelationGravity;
 		//std::cout << "acceleration - (" << m_accelerationGravity.x << ", " << m_accelerationGravity.y << ")" << std::endl;
+		setRampAcceleration();
 	}
 	if (ImGui::SliderFloat("Mass", &m_massKg, 1.f, 1000.f))
 	{
@@ -451,6 +465,7 @@ void PlayScene::reset()
 	m_startingXAfterHit = 0.0f;
 	m_forceFriction = { 0, 0 };
 	setInitBall();
+	setRampAcceleration();
 }
 
 void PlayScene::quadraticFormula(float a, float b, float c, float array[])
@@ -472,4 +487,13 @@ void PlayScene::setInitBall()
 	m_startingX = m_pBall->getTransform()->position.x;
 	m_startingY = m_pBall->getTransform()->position.y;
 	m_pBall->setCurrentHeading(m_degreeOfRamp);
+}
+
+void PlayScene::setRampAcceleration()
+{
+	float accel = sin(m_degreeOfRamp * Util::Deg2Rad) * m_accelerationGravity.y;
+
+	m_rampAcceleration.x = glm::cos(m_degreeOfRamp * Util::Deg2Rad) * accel;
+	m_rampAcceleration.y = glm::sin(m_degreeOfRamp * Util::Deg2Rad) * accel;
+	std::cout << "(" << m_rampAcceleration.x<< ", " << m_rampAcceleration.y << ")" << std::endl;
 }

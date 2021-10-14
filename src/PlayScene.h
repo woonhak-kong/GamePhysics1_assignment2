@@ -33,6 +33,7 @@ private:
 
 	float m_startingX;
 	float m_startingY;
+
 	float m_startingXAfterHit;
 	float m_launchElevationAngle;
 	float m_launchSpeed;
@@ -46,6 +47,7 @@ private:
 	int m_groundHeight;
 	int m_offsetRampPosition;
 	glm::vec2 m_accelerationGravity;
+	glm::vec2 m_rampAcceleration;
 	glm::vec2 m_orientation;
 	glm::vec2 m_startingVelocity;
 	glm::vec2 m_instantaneousVelocity;
@@ -64,6 +66,7 @@ private:
 	Label* m_coefficientOfFrictionFloor;
 	Label* m_forceFrictionAcceleration;
 	Label* m_rampDegreeLabel;
+	Label* m_rampAccelerationLabel;
 
 
 
@@ -72,6 +75,7 @@ private:
 	void reset();
 	void quadraticFormula(float a, float b, float c, float array[]);
 	void setInitBall();
+	void setRampAcceleration();
 };
 
 #endif /* defined (__PLAY_SCENE__) */
