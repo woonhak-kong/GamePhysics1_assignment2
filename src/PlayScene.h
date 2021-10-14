@@ -40,9 +40,11 @@ private:
 	float m_playTimeAfterHittingGround;
 	float m_massKg;
 	float m_kFrictionCoefficientFloor;
+	float m_degreeOfRamp;
 	int m_rampHeight;
 	int m_rampWidth;
 	int m_groundHeight;
+	int m_offsetRampPosition;
 	glm::vec2 m_accelerationGravity;
 	glm::vec2 m_orientation;
 	glm::vec2 m_startingVelocity;

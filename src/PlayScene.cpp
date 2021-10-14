@@ -27,9 +27,11 @@ PlayScene::PlayScene() :
 	m_isOnTheGround(false),
 	m_instantaneousVelocity({ 0, 0 }),
 	m_forceFriction({ 0.0f, 0.0f }),
-	m_rampHeight(30),
-	m_rampWidth(40),
-	m_groundHeight(600)
+	m_rampHeight(200),
+	m_rampWidth(400),
+	m_groundHeight(600),
+	m_offsetRampPosition(30),
+	m_degreeOfRamp(0)
 
 {
 	PlayScene::start();
@@ -50,6 +52,10 @@ void PlayScene::draw()
 
 	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 0, 255, 255);
 	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), 0, m_groundHeight, 1280, m_groundHeight);
+	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), 0+ m_offsetRampPosition, m_groundHeight, 0 + m_offsetRampPosition, m_groundHeight - m_rampHeight);
+	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), 0 + m_rampWidth, m_groundHeight, 0 + m_offsetRampPosition, m_groundHeight - m_rampHeight);
+
+
 
 
 
@@ -316,6 +322,12 @@ void PlayScene::start()
 	m_orientation.y = -glm::sin(m_launchElevationAngle * Util::Deg2Rad);
 	m_startingVelocity.x = m_orientation.x * m_launchSpeed;
 	m_startingVelocity.y = m_orientation.y * m_launchSpeed;
+
+
+
+	m_degreeOfRamp = atan((float)m_rampHeight / m_rampWidth) * Util::Rad2Deg;
+
+
 	ImGuiWindowFrame::Instance().setGUIFunction(std::bind(&PlayScene::GUI_Function, this));
 }
 
@@ -352,11 +364,15 @@ void PlayScene::GUI_Function()
 	//}
 
 
-	if (ImGui::SliderInt("Ramp Height", &m_rampHeight, 30, 300))
+	if (ImGui::SliderInt("Ramp Height", &m_rampHeight, 200, 500))
 	{
+		m_degreeOfRamp = atan((float)m_rampHeight / m_rampWidth) * Util::Rad2Deg;
+		std::cout << m_degreeOfRamp << std::endl;
 	}
-	if (ImGui::SliderInt("Ramp Width", &m_rampWidth, 40, 500))
+	if (ImGui::SliderInt("Ramp Width", &m_rampWidth, 400, 800))
 	{
+		m_degreeOfRamp = atan((float)m_rampHeight / m_rampWidth) * Util::Rad2Deg;
+		std::cout << m_degreeOfRamp << std::endl;
 	}
 
 
