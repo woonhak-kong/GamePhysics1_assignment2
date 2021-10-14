@@ -3,9 +3,9 @@
 #ifndef __BALL__
 #define __BALL__
 
-#include "Sprite.h"
+#include "Agent.h"
 
-class Ball final : public Sprite
+class Ball final : public Agent
 {
 public:
 	Ball();

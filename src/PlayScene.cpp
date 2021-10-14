@@ -333,6 +333,7 @@ void PlayScene::start()
 	std::stringstream string;
 	string << std::fixed << std::setprecision(2) << "Degree : " << m_degreeOfRamp;
 	m_rampDegreeLabel->setText(string.str());
+	setInitBall();
 
 
 	ImGuiWindowFrame::Instance().setGUIFunction(std::bind(&PlayScene::GUI_Function, this));
@@ -378,6 +379,7 @@ void PlayScene::GUI_Function()
 		std::stringstream string;
 		string << std::fixed << std::setprecision(2) << "Degree : " << m_degreeOfRamp;
 		m_rampDegreeLabel->setText(string.str());
+		setInitBall();
 	}
 	if (ImGui::SliderInt("Ramp Width", &m_rampWidth, 400, 800))
 	{
@@ -386,15 +388,16 @@ void PlayScene::GUI_Function()
 		std::stringstream string;
 		string << std::fixed << std::setprecision(2) << "Degree : " << m_degreeOfRamp;
 		m_rampDegreeLabel->setText(string.str());
+		setInitBall();
 	}
 
 
-	if (ImGui::SliderFloat("Launch Speed", &m_launchSpeed, 10.f, 200.f))
-	{
-		//m_launchSpeed = launchSpeed;
-		m_startingVelocity.x = m_orientation.x * m_launchSpeed;
-		m_startingVelocity.y = m_orientation.y * m_launchSpeed;
-	}
+	//if (ImGui::SliderFloat("Launch Speed", &m_launchSpeed, 10.f, 200.f))
+	//{
+	//	//m_launchSpeed = launchSpeed;
+	//	m_startingVelocity.x = m_orientation.x * m_launchSpeed;
+	//	m_startingVelocity.y = m_orientation.y * m_launchSpeed;
+	//}
 	//if (ImGui::SliderFloat("Angle Y", &m_launchElevationAngle, -90.f, 90.f))
 	//{
 	//	// for calculating launch velocity
@@ -440,14 +443,14 @@ void PlayScene::GUI_Function()
 
 void PlayScene::reset()
 {
+
 	m_isStart = false;
 	m_isOnTheGround = false;
 	m_playTime = 0;
 	m_playTimeAfterHittingGround = 0;
-	m_pBall->getTransform()->position.x = m_startingX;
-	m_pBall->getTransform()->position.y = m_startingY;
 	m_startingXAfterHit = 0.0f;
 	m_forceFriction = { 0, 0 };
+	setInitBall();
 }
 
 void PlayScene::quadraticFormula(float a, float b, float c, float array[])
@@ -459,4 +462,14 @@ void PlayScene::quadraticFormula(float a, float b, float c, float array[])
 	//std::cout << (b * b) - (4 * a * c) << std::endl;
 	array[0] = ((-1 * b) + sqrt((b * b) - (4 * a * c))) / (2 * a);
 	array[1] = ((-1 * b) - sqrt((b * b) - (4 * a * c))) / (2 * a);
+}
+
+void PlayScene::setInitBall()
+{
+
+	m_pBall->getTransform()->position.x = m_offsetRampPosition + 10;
+	m_pBall->getTransform()->position.y = m_groundHeight - m_rampHeight - m_pBall->getHeight() / 2;
+	m_startingX = m_pBall->getTransform()->position.x;
+	m_startingY = m_pBall->getTransform()->position.y;
+	m_pBall->setCurrentHeading(m_degreeOfRamp);
 }

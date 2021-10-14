@@ -3,11 +3,11 @@
 
 Ball::Ball()
 {
-	TextureManager::Instance().load("../Assets/textures/ball.png", "ball");
+	TextureManager::Instance().load("../Assets/textures/crate.png", "crate");
 
-	const auto size = TextureManager::Instance().getTextureSize("ball");
-	setWidth(size.x);
-	setHeight(size.y);
+	const auto size = TextureManager::Instance().getTextureSize("crate");
+	setWidth(40);
+	setHeight(30);
 	getTransform()->position = glm::vec2(100.0f, 100.0f);
 	getRigidBody()->velocity = glm::vec2(0, 0);
 	getRigidBody()->isColliding = false;
@@ -26,7 +26,7 @@ void Ball::draw()
 	const auto y = getTransform()->position.y;
 
 	// draw the target
-	TextureManager::Instance().draw("ball", x, y, 0, 255, true);
+	TextureManager::Instance().drawBySize("crate", x, y,getWidth(), getHeight(), getCurrentHeading(), 255, true);
 }
 
 void Ball::update()

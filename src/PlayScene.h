@@ -71,6 +71,7 @@ private:
 private:
 	void reset();
 	void quadraticFormula(float a, float b, float c, float array[]);
+	void setInitBall();
 };
 
 #endif /* defined (__PLAY_SCENE__) */
